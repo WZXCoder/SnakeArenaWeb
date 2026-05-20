@@ -36,6 +36,39 @@ canvas.addEventListener('click', () => canvas.focus());
 
 let gameRunning = false;
 
+function isMobileViewport() {
+  return window.matchMedia?.('(hover: none) and (pointer: coarse)').matches
+    || Math.min(window.innerWidth, window.innerHeight) <= 720;
+}
+
+async function requestLandscapeMode() {
+  if (!isMobileViewport()) return;
+
+  try {
+    if (document.fullscreenEnabled && !document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch {
+    // Browsers often require a direct user gesture; CSS still keeps the game in landscape layout.
+  }
+
+  try {
+    await screen.orientation?.lock?.('landscape');
+  } catch {
+    // Orientation locking is not available in every mobile browser.
+  }
+}
+
+function bindMobileViewport() {
+  if (!isMobileViewport()) return;
+
+  document.documentElement.classList.add('is-mobile');
+  requestLandscapeMode();
+  window.addEventListener('pointerdown', requestLandscapeMode, { once: true, capture: true });
+  window.addEventListener('orientationchange', () => setTimeout(() => canvas.focus(), 250));
+  window.addEventListener('resize', () => canvas.focus());
+}
+
 function setMobileControls(mode) {
   const active = ['single', 'two', 'vsai'].includes(mode);
   mobileControlsEl?.classList.toggle('hidden', !active);
@@ -104,6 +137,7 @@ function bindMainMenu() {
 }
 
 function init() {
+  bindMobileViewport();
   bindMainMenu();
   showMainMenu();
   canvas.focus();

@@ -4,8 +4,15 @@
   padding: 0;
 }
 
+html {
+  width: 100%;
+  min-height: 100%;
+  background: #1a1a2e;
+}
+
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,6 +20,10 @@ body {
   background: #1a1a2e;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: #eee;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #app {
@@ -20,19 +31,22 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  padding: 12px;
 }
 
 .canvas-wrap {
   position: relative;
-  max-width: 100%;
+  width: min(calc(100vw - 24px), calc((100vh - 56px) * 2), 1200px);
+  width: min(calc(100dvw - 24px), calc((100dvh - 56px) * 2), 1200px);
   line-height: 0;
 }
 
 #game-canvas {
   display: block;
   width: 100%;
-  max-width: 1200px;
   height: auto;
+  aspect-ratio: 2 / 1;
   border: 2px solid #333;
   background: #fff;
   cursor: default;
@@ -57,6 +71,7 @@ body {
   padding: 24px;
   overflow-y: auto;
   pointer-events: auto;
+  line-height: 1.2;
 }
 
 .overlay.hidden {
@@ -66,6 +81,7 @@ body {
 .menu-title {
   color: #ffc800;
   font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
   margin-bottom: 28px;
   text-align: center;
 }
@@ -161,6 +177,7 @@ body {
 
 .hint {
   font-size: 14px;
+  line-height: 1.35;
   color: #aaa;
   text-align: center;
 }
@@ -248,17 +265,117 @@ body {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 720px), (max-height: 520px) {
   body {
-    justify-content: flex-start;
-    padding: 12px 8px;
+    justify-content: center;
   }
 
   #app {
-    width: 100%;
+    gap: 8px;
+    padding: 8px;
   }
 
   .canvas-wrap {
-    width: 100%;
+    width: min(calc(100vw - 16px), calc((100vh - 38px) * 2), 1200px);
+    width: min(calc(100dvw - 16px), calc((100dvh - 38px) * 2), 1200px);
+  }
+
+  .overlay {
+    padding: 14px;
+  }
+
+  #main-menu .menu-title,
+  #algo-menu-title,
+  #count-menu .menu-title {
+    top: 0;
+  }
+
+  .menu-title {
+    font-size: clamp(1.55rem, 6vw, 2.35rem);
+    margin-bottom: 14px;
+  }
+
+  .menu-buttons {
+    gap: 8px;
+    width: min(300px, 78vw);
+  }
+
+  .menu-btn {
+    min-height: 42px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 1rem;
+  }
+
+  .algo-grid {
+    grid-template-columns: repeat(3, minmax(96px, 1fr));
+    gap: 8px;
+    max-width: min(680px, 92vw);
+  }
+
+  .algo-grid .menu-btn {
+    min-height: 38px;
+    font-size: 0.82rem;
+  }
+
+  .btn-back {
+    margin-top: 12px;
+  }
+
+  .hint {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  body {
+    width: 100vw;
+    width: 100dvw;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 0;
+  }
+
+  #app {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100vh;
+    width: 100dvh;
+    height: 100vw;
+    height: 100dvw;
+    max-width: none;
+    padding: 8px max(8px, env(safe-area-inset-right)) 8px max(8px, env(safe-area-inset-left));
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center;
+    justify-content: center;
+  }
+
+  .canvas-wrap {
+    width: min(calc(100vh - 16px), calc((100vw - 42px) * 2), 1200px);
+    width: min(calc(100dvh - 16px), calc((100dvw - 42px) * 2), 1200px);
+  }
+
+  .menu-buttons {
+    width: min(300px, 72vh);
+    width: min(300px, 72dvh);
+  }
+
+  .algo-grid {
+    max-width: min(680px, 92vh);
+    max-width: min(680px, 92dvh);
+  }
+
+  .touch-pad {
+    grid-template-columns: repeat(3, clamp(40px, 10vh, 56px));
+    grid-template-columns: repeat(3, clamp(40px, 10dvh, 56px));
+    grid-template-rows: repeat(2, clamp(40px, 10vh, 56px));
+    grid-template-rows: repeat(2, clamp(40px, 10dvh, 56px));
+  }
+
+  .touch-btn {
+    font-size: clamp(1.2rem, 5vh, 1.75rem);
+    font-size: clamp(1.2rem, 5dvh, 1.75rem);
   }
 }
