@@ -1,7 +1,8 @@
 # Snake Arena（Web 版）
 
 基于原 SnakeArena 项目的 **网页复刻**版贪吃蛇游戏。
-
+## 项目网址
+https://up9455ssp-snakearenaweb-20uhm01cp.maozi.io/
 ## 目录结构
 
 ```
