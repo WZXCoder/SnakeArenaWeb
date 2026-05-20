@@ -242,6 +242,10 @@ body {
   display: grid;
 }
 
+.mobile-controls.exit-only .touch-pad {
+  display: none;
+}
+
 .touch-btn {
   border: 2px solid rgba(255, 255, 255, 0.82);
   border-radius: 16px;

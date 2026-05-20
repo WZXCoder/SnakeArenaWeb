@@ -70,9 +70,10 @@ function bindMobileViewport() {
 }
 
 function setMobileControls(mode) {
-  const active = ['single', 'two', 'vsai'].includes(mode);
+  const active = ['single', 'two', 'vsai', 'brawl'].includes(mode);
   mobileControlsEl?.classList.toggle('hidden', !active);
   mobileControlsEl?.classList.toggle('two-players', mode === 'two');
+  mobileControlsEl?.classList.toggle('exit-only', mode === 'brawl');
   mobileControlsEl?.setAttribute('aria-hidden', active ? 'false' : 'true');
 }
 
