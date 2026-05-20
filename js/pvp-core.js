@@ -142,10 +142,10 @@ export async function runMatch(renderer, options) {
 
       const touchDir1 = keys.consumeVirtualDirection('p1');
       if (touchDir1) targetDir1 = touchDir1;
-      else if (keys.isKey('w')) targetDir1 = 'up';
-      else if (keys.isKey('s')) targetDir1 = 'down';
-      else if (keys.isKey('a')) targetDir1 = 'left';
-      else if (keys.isKey('d')) targetDir1 = 'right';
+      else if (keys.isKey('ArrowUp', 'w')) targetDir1 = 'up';
+      else if (keys.isKey('ArrowDown', 's')) targetDir1 = 'down';
+      else if (keys.isKey('ArrowLeft', 'a')) targetDir1 = 'left';
+      else if (keys.isKey('ArrowRight', 'd')) targetDir1 = 'right';
       if (!snake2Ai) {
         const touchDir2 = keys.consumeVirtualDirection('p2');
         if (touchDir2) targetDir2 = touchDir2;

@@ -209,6 +209,29 @@ body {
   user-select: none;
 }
 
+.mobile-exit-btn {
+  position: absolute;
+  top: clamp(8px, 2vw, 16px);
+  right: clamp(8px, 2vw, 16px);
+  min-width: 72px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  background: rgba(200, 60, 60, 0.86);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.mobile-exit-btn:active {
+  background: rgba(255, 90, 90, 0.95);
+  transform: scale(0.96);
+}
+
 .touch-pad-p2 {
   display: none;
   right: clamp(10px, 3vw, 28px);

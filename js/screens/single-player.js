@@ -47,13 +47,13 @@ export async function runSinglePlayer(ctx, renderer, keys, onExit) {
 
     let stepped = false;
     if (!isGameOver) {
-      // 方向键控制（↑↓←→）
+      // 方向键或 WASD 控制（↑↓←→ / WASD）
       const touchDir = keys.consumeVirtualDirection('p1');
       if (touchDir) targetDir = touchDir;
-      else if (keys.isArrowUp()) targetDir = 'up';
-      else if (keys.isArrowDown()) targetDir = 'down';
-      else if (keys.isArrowLeft()) targetDir = 'left';
-      else if (keys.isArrowRight()) targetDir = 'right';
+      else if (keys.isKey('ArrowUp', 'w')) targetDir = 'up';
+      else if (keys.isKey('ArrowDown', 's')) targetDir = 'down';
+      else if (keys.isKey('ArrowLeft', 'a')) targetDir = 'left';
+      else if (keys.isKey('ArrowRight', 'd')) targetDir = 'right';
 
       const action = actionFromTargetDir(game.direct, targetDir);
       const stepResult = game.playStep(action, performance.now());

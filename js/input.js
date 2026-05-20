@@ -12,6 +12,13 @@ export function createInputHandler(canvas) {
 
   const rect = () => canvas.getBoundingClientRect();
   const validDirs = new Set(['up', 'down', 'left', 'right']);
+  const updatePointerPosition = (e) => {
+    const r = rect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    state.mouseX = (e.clientX - r.left) * scaleX;
+    state.mouseY = (e.clientY - r.top) * scaleY;
+  };
 
   const queueVirtualDirection = (player, direction) => {
     if (!['p1', 'p2'].includes(player) || !validDirs.has(direction)) return;
@@ -22,7 +29,7 @@ export function createInputHandler(canvas) {
     if (e.key === 'Escape') state.quit = true;
     state.keysDown.add(e.key.toLowerCase());
     state.codesDown.add(e.code);
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd'].includes(e.key.toLowerCase())) {
       e.preventDefault();
     }
   });
@@ -33,21 +40,39 @@ export function createInputHandler(canvas) {
   });
 
   canvas.addEventListener('mousemove', (e) => {
-    const r = rect();
-    const scaleX = canvas.width / r.width;
-    const scaleY = canvas.height / r.height;
-    state.mouseX = (e.clientX - r.left) * scaleX;
-    state.mouseY = (e.clientY - r.top) * scaleY;
+    updatePointerPosition(e);
   });
 
   canvas.addEventListener('mousedown', (e) => {
     if (e.button === 0) {
+      updatePointerPosition(e);
       state._clicked = true;
     }
   });
 
+  canvas.addEventListener('pointermove', (e) => {
+    updatePointerPosition(e);
+  });
+
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 && e.pointerType !== 'touch') return;
+
+    updatePointerPosition(e);
+    state._clicked = true;
+    canvas.focus();
+  });
+
   document.getElementById('mobile-controls')?.addEventListener('pointerdown', (e) => {
     const target = e.target instanceof Element ? e.target : null;
+    const exitBtn = target?.closest('[data-touch-exit]');
+    if (exitBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      state.quit = true;
+      canvas.focus();
+      return;
+    }
+
     const btn = target?.closest('[data-touch-player][data-touch-dir]');
     if (!btn) return;
 
@@ -82,12 +107,12 @@ export function createInputHandler(canvas) {
       state.virtualDirs[player] = null;
       return direction;
     },
-    /** 支持 'ArrowUp' / 'arrowup' / 'w' */
+    /** 支持 'ArrowUp' / 'arrowup' / 'w' / 'KeyW' */
     isKey(...keys) {
       return keys.some((k) => {
         if (k.startsWith('Arrow')) return state.codesDown.has(k);
         const lk = k.toLowerCase();
-        return state.keysDown.has(lk) || state.codesDown.has(k);
+        return state.keysDown.has(lk) || state.codesDown.has(k) || state.codesDown.has(`Key${lk.toUpperCase()}`);
       });
     },
     isArrowUp() {

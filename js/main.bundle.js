@@ -94,6 +94,13 @@
     };
     const rect = () => canvas2.getBoundingClientRect();
     const validDirs = /* @__PURE__ */ new Set(["up", "down", "left", "right"]);
+    const updatePointerPosition = (e) => {
+      const r = rect();
+      const scaleX = canvas2.width / r.width;
+      const scaleY = canvas2.height / r.height;
+      state.mouseX = (e.clientX - r.left) * scaleX;
+      state.mouseY = (e.clientY - r.top) * scaleY;
+    };
     const queueVirtualDirection = (player, direction) => {
       if (!["p1", "p2"].includes(player) || !validDirs.has(direction)) return;
       state.virtualDirs[player] = direction;
@@ -102,7 +109,7 @@
       if (e.key === "Escape") state.quit = true;
       state.keysDown.add(e.key.toLowerCase());
       state.codesDown.add(e.code);
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "w", "a", "s", "d"].includes(e.key.toLowerCase())) {
         e.preventDefault();
       }
     });
@@ -111,19 +118,33 @@
       state.codesDown.delete(e.code);
     });
     canvas2.addEventListener("mousemove", (e) => {
-      const r = rect();
-      const scaleX = canvas2.width / r.width;
-      const scaleY = canvas2.height / r.height;
-      state.mouseX = (e.clientX - r.left) * scaleX;
-      state.mouseY = (e.clientY - r.top) * scaleY;
+      updatePointerPosition(e);
     });
     canvas2.addEventListener("mousedown", (e) => {
       if (e.button === 0) {
+        updatePointerPosition(e);
         state._clicked = true;
       }
     });
+    canvas2.addEventListener("pointermove", (e) => {
+      updatePointerPosition(e);
+    });
+    canvas2.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0 && e.pointerType !== "touch") return;
+      updatePointerPosition(e);
+      state._clicked = true;
+      canvas2.focus();
+    });
     document.getElementById("mobile-controls")?.addEventListener("pointerdown", (e) => {
       const target = e.target instanceof Element ? e.target : null;
+      const exitBtn = target?.closest("[data-touch-exit]");
+      if (exitBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        state.quit = true;
+        canvas2.focus();
+        return;
+      }
       const btn = target?.closest("[data-touch-player][data-touch-dir]");
       if (!btn) return;
       e.preventDefault();
@@ -156,12 +177,12 @@
         state.virtualDirs[player] = null;
         return direction;
       },
-      /** 支持 'ArrowUp' / 'arrowup' / 'w' */
+      /** 支持 'ArrowUp' / 'arrowup' / 'w' / 'KeyW' */
       isKey(...keys2) {
         return keys2.some((k) => {
           if (k.startsWith("Arrow")) return state.codesDown.has(k);
           const lk = k.toLowerCase();
-          return state.keysDown.has(lk) || state.codesDown.has(k);
+          return state.keysDown.has(lk) || state.codesDown.has(k) || state.codesDown.has(`Key${lk.toUpperCase()}`);
         });
       },
       isArrowUp() {
@@ -559,10 +580,10 @@
       if (!isGameOver) {
         const touchDir = keys2.consumeVirtualDirection("p1");
         if (touchDir) targetDir = touchDir;
-        else if (keys2.isArrowUp()) targetDir = "up";
-        else if (keys2.isArrowDown()) targetDir = "down";
-        else if (keys2.isArrowLeft()) targetDir = "left";
-        else if (keys2.isArrowRight()) targetDir = "right";
+        else if (keys2.isKey("ArrowUp", "w")) targetDir = "up";
+        else if (keys2.isKey("ArrowDown", "s")) targetDir = "down";
+        else if (keys2.isKey("ArrowLeft", "a")) targetDir = "left";
+        else if (keys2.isKey("ArrowRight", "d")) targetDir = "right";
         const action = actionFromTargetDir(game.direct, targetDir);
         const stepResult = game.playStep(action, performance.now());
         stepped = stepResult.stepped;
@@ -1584,10 +1605,10 @@
         }
         const touchDir1 = keys2.consumeVirtualDirection("p1");
         if (touchDir1) targetDir1 = touchDir1;
-        else if (keys2.isKey("w")) targetDir1 = "up";
-        else if (keys2.isKey("s")) targetDir1 = "down";
-        else if (keys2.isKey("a")) targetDir1 = "left";
-        else if (keys2.isKey("d")) targetDir1 = "right";
+        else if (keys2.isKey("ArrowUp", "w")) targetDir1 = "up";
+        else if (keys2.isKey("ArrowDown", "s")) targetDir1 = "down";
+        else if (keys2.isKey("ArrowLeft", "a")) targetDir1 = "left";
+        else if (keys2.isKey("ArrowRight", "d")) targetDir1 = "right";
         if (!snake2Ai) {
           const touchDir2 = keys2.consumeVirtualDirection("p2");
           if (touchDir2) targetDir2 = touchDir2;
