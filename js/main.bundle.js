@@ -1605,10 +1605,10 @@
         }
         const touchDir1 = keys2.consumeVirtualDirection("p1");
         if (touchDir1) targetDir1 = touchDir1;
-        else if (keys2.isKey("ArrowUp", "w")) targetDir1 = "up";
-        else if (keys2.isKey("ArrowDown", "s")) targetDir1 = "down";
-        else if (keys2.isKey("ArrowLeft", "a")) targetDir1 = "left";
-        else if (keys2.isKey("ArrowRight", "d")) targetDir1 = "right";
+        else if (keys2.isKey("w") || snake2Ai && keys2.isKey("ArrowUp")) targetDir1 = "up";
+        else if (keys2.isKey("s") || snake2Ai && keys2.isKey("ArrowDown")) targetDir1 = "down";
+        else if (keys2.isKey("a") || snake2Ai && keys2.isKey("ArrowLeft")) targetDir1 = "left";
+        else if (keys2.isKey("d") || snake2Ai && keys2.isKey("ArrowRight")) targetDir1 = "right";
         if (!snake2Ai) {
           const touchDir2 = keys2.consumeVirtualDirection("p2");
           if (touchDir2) targetDir2 = touchDir2;
